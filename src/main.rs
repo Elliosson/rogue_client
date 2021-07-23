@@ -46,6 +46,8 @@ pub fn consol_print(mes: String) {
     println!("{}", mes);
 }
 
+const CENTER:i32 = 30;
+
 struct State {
     pub rectangle: Rect,
     pub data: Arc<Mutex<Data>>,
@@ -70,6 +72,8 @@ impl GameState for State {
         ctx.cls();
 
         draw_map(ctx, data_guard.map.clone(), &self.player_info.my_info.pos);
+
+        draw_player(ctx);
 
         gui::draw_ui(ctx, &self.player_info);
 
@@ -124,8 +128,8 @@ pub struct Data {
 }
 
 fn draw_map(ctx: &mut Rltk, mut map: Vec<(Point, Renderable)>, my_pos: &Position) {
-    let center_x = 30;
-    let center_y = 30;
+    let center_x = CENTER;
+    let center_y = CENTER;
     map.sort_by(|a, b| b.1.render_order.cmp(&a.1.render_order));
     for (pos, render) in map.iter() {
         let x = pos.x - my_pos.x + center_x;
@@ -134,6 +138,10 @@ fn draw_map(ctx: &mut Rltk, mut map: Vec<(Point, Renderable)>, my_pos: &Position
             ctx.set(x, y, render.fg, render.bg, render.glyph);
         }
     }
+}
+
+fn draw_player(ctx: &mut Rltk){
+    ctx.set(CENTER, CENTER, RGB::named(rltk::WHITE), RGB::named(rltk::BLACK), '@' as u8);
 }
 
 fn main() {
